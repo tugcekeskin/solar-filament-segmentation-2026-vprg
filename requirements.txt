@@ -1,6 +1,7 @@
-# Deep learning
-torch
-torchvision
+# PyTorch:
+# CUDA 13.0: pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu130
+# CUDA 12.1: pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu121
+# CPU only:  pip install torch==2.14.1 torchvision==0.29.1
 
 # Segmentation models
 segmentation-models-pytorch
