@@ -4,8 +4,8 @@ Solution for the [Kaggle Solar Filament Segmentation Challenge 2026](https://www
 
 ## Team
 
-- Tugce Keskin
-- Dogus Can Korkmaz
+- Tugce Keskin (Kaggle: tugcekskn)
+- Dogus Can Korkmaz (Kaggle: doucankorkmaz)
 
 ## Installation
 
