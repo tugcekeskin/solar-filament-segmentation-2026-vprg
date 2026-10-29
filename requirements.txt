@@ -1,0 +1,33 @@
+# Deep learning
+torch
+torchvision
+
+# Segmentation models
+segmentation-models-pytorch
+
+# Data processing
+numpy
+pandas
+opencv-python
+Pillow
+pycocotools
+
+# Augmentation
+albumentations
+
+# Visualization
+matplotlib
+seaborn
+
+# Progress
+tqdm
+
+# Kaggle
+kaggle
+
+# Jupyter
+jupyter
+ipykernel
+
+# ML utils
+scikit-learn
