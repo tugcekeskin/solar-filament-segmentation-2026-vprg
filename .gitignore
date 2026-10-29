@@ -223,3 +223,8 @@ __marimo__/
 data/
 notebooks/*.png
 submission.csv
+
+# Project specific
+data/
+notebooks/*.png
+submission.csv
