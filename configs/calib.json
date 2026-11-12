@@ -1,0 +1,12 @@
+{
+ "best_params": {
+  "conf": 0.25,
+  "min_area": 100,
+  "max_det": 20,
+  "nms": 0.3,
+  "erode": 0,
+  "erode_shape": "square",
+  "mask_thr": 0.35
+ },
+ "note": "same params as flip_ref; best on SAM+U-Net blended val cache (0.4741)"
+}
