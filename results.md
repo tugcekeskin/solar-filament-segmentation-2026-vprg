@@ -57,3 +57,9 @@ Her run için yarışma formatında (`filament_id,segmentation_rle`, COCO RLE, F
 - `submission_run1.csv` — Run 1 plan cfg (conf .3, NMS .3, thin 5x5): 1386 filament, 0.34 MB
 - `submission_run2.csv` — Run 2 en iyi cfg (conf .4, NMS .5, thin 3x3): 1167 filament, 0.32 MB
 Sonraki run'lar için aynı şekilde eklenecek. Kaggle'a henüz gönderilmedi (günlük 5 hak; gönderim kararı kullanıcıda).
+
+### Her run sonrası zorunlu akış
+1. `python src/predict.py ... --out docs/submission_runX.csv` (sadece `test/test_images` üzerinde inference)
+2. `python src/check_submission.py docs/submission_runX.csv` — format + test seti + RLE decode doğrulaması (OK vermeden commit yok)
+3. results.md güncelle (Run Log satırı + Run Details + "Neden")
+4. Tek commit: `git add . && git commit -m "results: run X tamamlandı" && git push` — results.md ve CSV birlikte.
