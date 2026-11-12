@@ -48,3 +48,12 @@ Plan'daki baseline'ı aynen uyguladım. Notlar: (a) Ultralytics yazdığı `runs
 
 #### Neden Bu Değişikliği Yaptım
 Plan: Run 1 üzerinde erosion/conf/min_area grid'i. Run 1'in cache'lenmiş ham tahminleri üzerinde yapıldığı için yeniden eğitim gerekmedi. Not: 0.422 val üzerinde seçildi; Kaggle'a göndermeden önce Run 3 ile teyit edilecek.
+
+---
+
+## Submission dosyaları (`docs/`)
+Her run için yarışma formatında (`filament_id,segmentation_rle`, COCO RLE, Fortran order, 2048x2048) test tahmini: `docs/submission_runX.csv`
+(`python src/predict.py ...`; test verisi sadece inference için kullanılır, eğitim/tuning'de asla).
+- `submission_run1.csv` — Run 1 plan cfg (conf .3, NMS .3, thin 5x5): 1386 filament, 0.34 MB
+- `submission_run2.csv` — Run 2 en iyi cfg (conf .4, NMS .5, thin 3x3): 1167 filament, 0.32 MB
+Sonraki run'lar için aynı şekilde eklenecek. Kaggle'a henüz gönderilmedi (günlük 5 hak; gönderim kararı kullanıcıda).
