@@ -13,6 +13,7 @@ Caveat: postprocess params are tuned on this same val set, so the best-config nu
 |---|------|-------|--------|--------|--------|--------|----|----|----|-------|
 | 1 | 2026-11-12 | YOLO11s-seg | 1024px, 80ep, plan cfg (conf .3, NMS .3, thin 5x5) | 0.387 | 0.651 | 0.594 | 818 | 599 | 518 | baseline as specified |
 | 2 | 2026-11-12 | YOLO11s-seg (Run 1 weights) | conf .4, NMS .5, min_area 20, thin 3x3 | 0.422 | 0.662 | 0.637 | 800 | 375 | 536 | postprocess grid, no retraining |
+| 3 | 2026-11-12 | YOLO11m-seg | 1280px, 80ep, conf .5, NMS .5, min_area 20, thin 3x3 | 0.424 | 0.676 | 0.628 | 726 | 252 | 610 | küçük grid (6 cfg); kazanç Run 2'ye göre sadece +0.002 |
 
 ---
 
@@ -49,6 +50,28 @@ Plan'daki baseline'ı aynen uyguladım. Notlar: (a) Ultralytics yazdığı `runs
 #### Neden Bu Değişikliği Yaptım
 Plan: Run 1 üzerinde erosion/conf/min_area grid'i. Run 1'in cache'lenmiş ham tahminleri üzerinde yapıldığı için yeniden eğitim gerekmedi. Not: 0.422 val üzerinde seçildi; Kaggle'a göndermeden önce Run 3 ile teyit edilecek.
 
+### Run 3 — YOLO11m-seg, 1280px
+**Date:** 2026-11-12
+
+#### Preprocessing
+- Ham grayscale->3ch, CLAHE yok; Ultralytics resize 2048->1280.
+
+#### Model
+- YOLO11m-seg, COCO pretrained, imgsz 1280, 80 epoch, batch 4, Ultralytics varsayılan LR/optimizer, aynı train/val split.
+
+#### Postprocessing
+- Conf 0.5, mask NMS IoU 0.5, min area 20, thinning 3x3 cross, TTA yok.
+
+#### Results
+- Val PQ 0.424 | SQ 0.676 | RQ 0.628 | TP 726 FP 252 FN 610
+- Train time: ~23.5 min | Inference süresi bu run için kaydedilmedi (evaluate çıktısı hata nedeniyle kesildi) | GPU: ~10 GB eğitimde
+- Diğer grid noktaları: conf .4/5x5 -> 0.402; conf .3/5x5 -> 0.395; conf .5/5x5 -> 0.393
+- Test CSV: `docs/submission_run3.csv` (953 filament, 175/180 test görüntüsünde tahmin var, check_submission OK)
+
+#### Neden Bu Değişikliği Yaptım
+Plan: büyük model + yüksek çözünürlük (arkadaşın bulgusu: 11m > 11s, 1536 > 1280 > 1024). Grid'i küçülttüm (conf .3/.4/.5, NMS .5, area 20, thin 3/5) çünkü Run 2'de min_area ve NMS farksızdı ve tam grid ~15 dk sürüyor.
+**Dürüst yorum:** Run 2'ye göre kazanç +0.002 PQ, yani <0.005 eşiğinin altında ve 106 val görüntüsünde gürültü seviyesinde. En iyi conf 0.5 grid'in kenarında, daha yüksek conf denenmedi. 11m, SQ'yu biraz artırdı (.662->.676) ama daha çok tahmini eledi (RQ benzer). Plandaki ~0.42 hedefine nominal olarak ulaşıldı, ama bunun model farkından geldiği söylenemez.
+
 ---
 
 ## Submission dosyaları (`docs/`)
@@ -56,6 +79,7 @@ Her run için yarışma formatında (`filament_id,segmentation_rle`, COCO RLE, F
 (`python src/predict.py ...`; test verisi sadece inference için kullanılır, eğitim/tuning'de asla).
 - `submission_run1.csv` — Run 1 plan cfg (conf .3, NMS .3, thin 5x5): 1386 filament, 0.34 MB
 - `submission_run2.csv` — Run 2 en iyi cfg (conf .4, NMS .5, thin 3x3): 1167 filament, 0.32 MB
+- `submission_run3.csv` — Run 3 en iyi cfg (conf .5, NMS .5, thin 3x3): 953 filament, 0.26 MB
 Sonraki run'lar için aynı şekilde eklenecek. Kaggle'a henüz gönderilmedi (günlük 5 hak; gönderim kararı kullanıcıda).
 
 ### Her run sonrası zorunlu akış
