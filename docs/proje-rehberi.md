@@ -350,6 +350,130 @@ Inference: ~1.13 sn/görüntü
 
 ---
 
+## 🤖 Claude Code İçin Talimatlar
+
+### Mevcut Durum
+- EDA tamamlandı (`notebooks/01_eda.ipynb`)
+- Ortam kurulu (conda: `filament`, PyTorch 2.14.1, CUDA 13.0, RTX 4090)
+- Veri hazır: `/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026`
+- Repo: `/home/baykar/Desktop/FLAMENT/solar-filament-segmentation-2026-vprg`
+
+### Görev
+Aşağıdaki deney planını sırayla uygula. Her deney bitince:
+1. Sonuçları `results.md`'ye yaz (format aşağıda)
+2. GitHub'a push et (`git add . && git commit -m "results: run X" && git push`)
+3. Sonuçları analiz et
+4. Bir sonraki deneye geç veya optimize et
+
+### Karar Yetkisi
+- Deney planı biterse kendi inisiyatifinle yeni deneyler tasarla
+- PQ artışı < 0.005 ise o yönü bırak, farklı yaklaşım dene
+- Arkadaşımızın bulgularını dikkate al ama kendi özgün katkımızı da ekle
+- **Deadline: 15 Kasım 09:00 TR saati** — son 3 saati rapor + form için bırak
+- Tüm kararlarını `results.md`'ye "Neden bu değişikliği yaptım" notu ile kaydet
+
+### Arkadaşımızın Bulgularından Öğrendiklerimiz
+- CLAHE → no gain (deneme)
+- Mask thinning (5×5 cross erosion) → +0.073 PQ (kritik!)
+- YOLO11m > YOLO11s (+0.005 PQ)
+- 1536px > 1280px > 1024px
+- Flip TTA → +0.006
+- U-Net crop refiner → +0.004
+- 150 epoch → no gain (80 yeterli)
+- Consensus filtering → noise seviyesinde
+
+### Özgün Katkımız
+Spine-guided loss — spine maskesini loss fonksiyonunda piksel ağırlığı olarak kullanmak. Kimse denememiş, raporda güçlü bir katkı olur.
+
+---
+
+## 🧪 Deney Planı
+
+### Deney Sırası
+
+**Run 1 — YOLO11s-seg Baseline**
+- imgsz: 1024, epochs: 80, batch: 4
+- conf: 0.30, NMS: 0.3, min_area: 20
+- Mask thinning: 5×5 cross erosion
+- Hedef: ~0.35 PQ
+
+**Run 2 — YOLO11s-seg + Thinning Grid**
+- Run 1 üzerine farklı erosion parametreleri dene (3×3, 5×5, 7×7)
+- conf ve min_area grid'i
+- Hedef: ~0.38 PQ
+
+**Run 3 — YOLO11m-seg**
+- imgsz: 1280, epochs: 80
+- En iyi thinning parametreleri
+- Hedef: ~0.42 PQ
+
+**Run 4 — YOLO11m-seg + Flip TTA**
+- id+h+v flip TTA
+- Hedef: ~0.45 PQ
+
+**Run 5 — U-Net + Spine-guided Loss (Özgün Katkı)**
+- Encoder: ResNet34, pretrained ImageNet
+- Spine maskesi loss'ta piksel ağırlığı olarak
+- Loss: Focal + Dice + Spine-weighted
+- Hedef: Arkadaşından farklı özgün yaklaşım
+
+**Run 6+ — Serbest Deney**
+- Önceki sonuçlara göre kendi inisiyatifinle devam et
+
+### Results.md Formatı
+
+```markdown
+# Experiment Results
+
+## Run Log
+
+| # | Date | Model | Config | Val PQ | Val SQ | Val RQ | TP | FP | FN | Notes |
+|---|------|-------|--------|--------|--------|--------|----|----|----|-------|
+| 1 | 2026-11-12 | YOLO11s-seg | 1024px, 80ep | 0.xxx | 0.xxx | 0.xxx | - | - | - | baseline |
+
+---
+
+## Run Details
+
+### Run 1 — ...
+**Date:** ...
+
+#### Preprocessing
+- ...
+
+#### Model
+- Architecture: ...
+- Pretrained: ...
+- imgsz: ...
+- Epochs: ...
+- Batch: ...
+- LR: ...
+
+#### Augmentation
+- ...
+
+#### Postprocessing
+- Confidence threshold: ...
+- Mask NMS IoU: ...
+- Min area: ...
+- Mask thinning: ...
+- TTA: ...
+
+#### Results
+- Val PQ: ...
+- Val SQ: ...
+- Val RQ: ...
+- TP: ... | FP: ... | FN: ...
+- Train time: ... min
+- Inference: ... sn/görüntü
+- GPU memory: ... GB
+
+#### Neden Bu Değişikliği Yaptım
+...
+```
+
+---
+
 ## 📜 Önemli Kurallar
 
 | Kural | Detay |
