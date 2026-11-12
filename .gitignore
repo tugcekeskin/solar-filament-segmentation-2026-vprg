@@ -5,3 +5,17 @@ runs/
 __pycache__/
 .ipynb_checkpoints/
 preds_cache/
+
+# Final model weights are committed (required by the final submission)
+!weights/
+!weights/yolo11m_seg_1536.pt
+!weights/unet_refiner.pt
+!weights/sam_lora_refiner.pt
+.venv/
+data/
+artifacts/
+work/
+pipeline_work/
+*.pyc
+.pytest_cache/
+*.egg-info/
