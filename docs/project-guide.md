@@ -1,145 +1,145 @@
-# ☀️ Solar Filament Segmentation Challenge 2026 — Proje Rehberi
+# ☀️ Solar Filament Segmentation Challenge 2026 — Project Guide
 
-## 📋 Yarışma Özeti
+## 📋 Competition Summary
 
 | | |
 |---|---|
 | **Platform** | Kaggle (IEEE BigData Cup 2026) |
 | **Link** | https://www.kaggle.com/competitions/filament-segmentation-2026 |
 | **Sponsor** | NSF National Solar Observatory (NSO) |
-| **Ödül** | $3.000 (ilk 3 takım, skor oranına göre) |
-| **Takım Limiti** | Maksimum 5 kişi |
-| **Günlük Submit** | 5 hak |
-| **Final Submit** | 2 submission seçilecek |
+| **Prize** | $3,000 (top 3 teams, proportional to score) |
+| **Team Limit** | Maximum 5 people |
+| **Daily Submissions** | 5 |
+| **Final Submission** | 2 submissions will be selected |
 | **Repo** | https://github.com/tugcekeskin/solar-filament-segmentation-2026-vprg |
 
 ---
 
-## 📅 Önemli Tarihler
+## 📅 Important Dates
 
-| Tarih | Olay |
+| Date | Event |
 |---|---|
-| 10 Temmuz 2026 | Yarışma başladı |
-| **15 Kasım 2026, 23:59 CDT** | **Final rapor + çözüm teslim deadline'ı** |
-| 30 Kasım 2026 | Kazananlar açıklanacak |
-| 14-17 Aralık 2026 | IEEE BigData Konferansı, Phoenix AZ (opsiyonel) |
+| July 10, 2026 | Competition started |
+| **November 15, 2026, 23:59 CDT** | **Final report + solution submission deadline** |
+| November 30, 2026 | Winners announced |
+| December 14-17, 2026 | IEEE BigData Conference, Phoenix AZ (optional) |
 
 ---
 
-## 🎯 Görev
+## 🎯 Task
 
-GONG H-Alpha teleskoplarından çekilmiş **2048×2048 piksel** güneş fotoğraflarında **solar filamentleri** piksel düzeyinde tespit et ve maskele.
+Detect and mask **solar filaments** at the pixel level in **2048×2048 pixel** solar images taken by GONG H-Alpha telescopes.
 
 ```
 Input:  2048×2048 grayscale H-Alpha JPEG
 Output: Per-filament RLE mask → submission.csv
 ```
 
-**Solar filament nedir?**
-Güneş yüzeyindeki karanlık, uzun yapılar. Güneş patlamalarının (CME) habercisi. Uzay hava tahmini için kritik.
+**What is a solar filament?**
+Dark, elongated structures on the solar surface. A precursor of solar eruptions (CME). Critical for space weather forecasting.
 
 ---
 
-## 📏 Değerlendirme Kriterleri
+## 📏 Evaluation Criteria
 
-### Nicel (%70)
-**Ana metrik: Panoptic Quality (PQ)**
+### Quantitative (70%)
+**Main metric: Panoptic Quality (PQ)**
 
 ```
 PQ = SQ × DQ
 
-SQ (Segmentation Quality) = Maske ne kadar doğru? (IoU)
-DQ (Detection Quality)    = Kaç filament buldun? (F1 skoru)
+SQ (Segmentation Quality) = How accurate is the mask? (IoU)
+DQ (Detection Quality)    = How many filaments did you find? (F1 score)
 
-PQ formülü:
+PQ formula:
 PQ(Y, Ŷ) = Σ IoU(y, ŷ) / (|TP| + 0.5|FP| + 0.5|FN|)
 ```
 
-Ayrıca bakılacaklar:
-- Dice score dağılımı
-- IoU score dağılımı
-- One-to-many / many-to-one ilişki dağılımı
+Also to be looked at:
+- Dice score distribution
+- IoU score distribution
+- One-to-many / many-to-one relationship distribution
 
-### Nitel (%30)
-- Pipeline açıklaması (preprocessing → model → postprocessing)
-- Tahmin edilen maskelerin görsel kalitesi
-- Kodun modülerliği ve dokümantasyonu
+### Qualitative (30%)
+- Pipeline description (preprocessing → model → postprocessing)
+- Visual quality of the predicted masks
+- Modularity and documentation of the code
 
-> ⚠️ Sadece PQ yetmez! Temiz kod + iyi rapor da önemli.
+> ⚠️ PQ alone is not enough! Clean code + a good report matter too.
 
 ---
 
-## 🎯 Gerçekçi Skor Hedefleri
+## 🎯 Realistic Score Targets
 
-| Seviye | PQ | Not |
+| Level | PQ | Note |
 |---|---|---|
-| 🏁 İlk baseline | ~0.18 | U-Net 5 epoch |
-| 👍 İyi başlangıç | ~0.36 | YOLO + U-Net refiner |
-| 🥇 **Hedefimiz** | **0.40–0.45** | — |
-| 🏆 En iyi dürüst skor | ~0.49 | noisyislands |
+| 🏁 First baseline | ~0.18 | U-Net 5 epochs |
+| 👍 Good start | ~0.36 | YOLO + U-Net refiner |
+| 🥇 **Our target** | **0.40–0.45** | — |
+| 🏆 Best honest score | ~0.49 | noisyislands |
 
-> Organizatörler: **"PQ > 0.35 bizim için değerli"**
-> Leaderboard'daki 0.70+ skorlar sistem açığı kullanan takımlar — leaderboard temizlenecek.
+> Organizers: **"PQ > 0.35 is valuable for us"**
+> The 0.70+ scores on the leaderboard are teams exploiting a loophole in the system — the leaderboard will be cleaned up.
 
 ---
 
-## 📦 Veri Seti — MAGFiLO 1.0
+## 📦 Dataset — MAGFiLO 1.0
 
 **MAGFiLO** = Manually Annotated GONG Filaments from H-Alpha Observations
 
 ```
-MAGFiLO_1.0_Kaggle_2026/          (750.97 MB, 888 dosya)
+MAGFiLO_1.0_Kaggle_2026/          (750.97 MB, 888 files)
 ├── train/
-│   ├── train_images/              ← 707 JPEG görüntü
+│   ├── train_images/              ← 707 JPEG images
 │   └── MAGFiLO_1.0_Annotations_kaggle2026_train.json
 └── test/
-    └── test_images/               ← 180 JPEG görüntü (annotation yok)
+    └── test_images/               ← 180 JPEG images (no annotations)
 ```
 
-### Görüntü Özellikleri
-- 2048×2048 piksel, grayscale JPEG (RGB olarak kaydedilmiş — 3 kanal, hepsi aynı)
-- Dosya adı formatı: `YYYYMMDDHHMMSSII.jpeg`
-- Örnek: `20140609195854Bh.jpeg` → 9 Haziran 2014, 19:58:54, Big Bear Gözlemevi
+### Image Properties
+- 2048×2048 pixels, grayscale JPEG (saved as RGB — 3 channels, all identical)
+- File name format: `YYYYMMDDHHMMSSII.jpeg`
+- Example: `20140609195854Bh.jpeg` → June 9, 2014, 19:58:54, Big Bear Observatory
 
-### GONG Gözmeveyleri (6 İstasyon)
+### GONG Observatories (6 Stations)
 
-| Kod | Gözlemevi | Konum | Görüntü Sayısı |
+| Code | Observatory | Location | Image Count |
 |---|---|---|---|
-| **Bh** | Big Bear Solar Observatory | California, ABD | 198 |
-| **Ch** | Cerro Tololo Interamerican Observatory | Şili | 195 |
-| **Lh** | Learmonth Solar Observatory | Avustralya | 210 |
-| **Mh** | Mauna Loa Solar Observatory | Hawaii, ABD | 205 |
-| **Th** | Teide Observatory | Kanarya Adaları, İspanya | 180 |
-| **Uh** | Udaipur Solar Observatory | Hindistan | 166 |
+| **Bh** | Big Bear Solar Observatory | California, USA | 198 |
+| **Ch** | Cerro Tololo Interamerican Observatory | Chile | 195 |
+| **Lh** | Learmonth Solar Observatory | Australia | 210 |
+| **Mh** | Mauna Loa Solar Observatory | Hawaii, USA | 205 |
+| **Th** | Teide Observatory | Canary Islands, Spain | 180 |
+| **Uh** | Udaipur Solar Observatory | India | 166 |
 
-> Dağılım çok dengeli — model belirli bir gözmeveyi ezberlemez.
+> The distribution is very balanced — the model will not memorize a particular observatory.
 
-### EDA Bulguları
+### EDA Findings
 
-- **707 train, 180 test** görüntü, tümü 2048×2048 grayscale JPEG
-- **37 annotator**, 8199 toplam annotation
-- **Görüntü başına filament:** min=1, max=58, ortalama=11.6
-- **Multi-annotator dağılımı:**
-  - 1 annotator: 411 görüntü (%58.1)
-  - 2 annotator: 145 görüntü (%20.5)
-  - 3 annotator: 151 görüntü (%21.4)
-- **Filament alanı:** min=9, max=37739, ortalama=2120, median=1228 piksel → çoğu çok küçük!
-- **Piksel değerleri:** mean ~80, std ~58 (karanlık güneş diski, parlak arka plan)
-- **Spine:** 8199/8199 annotation'da mevcut — her filamentte var
-- **Spine uzunluğu:** min=12, max=1105, ortalama=147 piksel → filamentler ince ve uzun
+- **707 train, 180 test** images, all 2048×2048 grayscale JPEG
+- **37 annotators**, 8199 annotations in total
+- **Filaments per image:** min=1, max=58, mean=11.6
+- **Multi-annotator distribution:**
+  - 1 annotator: 411 images (58.1%)
+  - 2 annotators: 145 images (20.5%)
+  - 3 annotators: 151 images (21.4%)
+- **Filament area:** min=9, max=37739, mean=2120, median=1228 pixels → most are very small!
+- **Pixel values:** mean ~80, std ~58 (dark solar disk, bright background)
+- **Spine:** present in 8199/8199 annotations — every filament has one
+- **Spine length:** min=12, max=1105, mean=147 pixels → filaments are thin and long
 
-### Kategori Dağılımı
+### Category Distribution
 
-| Kategori | Sayı | Oran | Açıklama |
+| Category | Count | Ratio | Description |
 |---|---|---|---|
-| Unidentifiable | 3074 | %37.5 | Filament var ama chirality belirlenemiyor |
-| Right | 2590 | %31.6 | Sağ chiralite (kesin) |
-| Left | 2535 | %30.9 | Sol chiralite (kesin) |
-| Ambiguous | 0 | %0 | Filament mi değil mi belirsiz |
+| Unidentifiable | 3074 | 37.5% | Filament exists but chirality cannot be determined |
+| Right | 2590 | 31.6% | Right chirality (certain) |
+| Left | 2535 | 30.9% | Left chirality (certain) |
+| Ambiguous | 0 | 0% | Unclear whether it is a filament or not |
 
-> **Chirality nedir?** Filamentin manyetik alan sarmal yönü. Biz tahmin etmiyoruz ama eğitimde bilgi olarak kullanılabilir.
+> **What is chirality?** The helical direction of the filament's magnetic field. We do not predict it, but it can be used as information during training.
 
-### Annotation Formatı (COCO-style JSON)
+### Annotation Format (COCO-style JSON)
 
 ```json
 {
@@ -153,11 +153,11 @@ MAGFiLO_1.0_Kaggle_2026/          (750.97 MB, 888 dosya)
 }
 ```
 
-- **segmentation:** polygon koordinatları (kapalı yol)
-- **spine:** filament omurgası / merkez çizgisi — ek ipucu olarak kullanılabilir
-- **iscrowd:** her zaman 0 (tek filament)
+- **segmentation:** polygon coordinates (closed path)
+- **spine:** the filament's backbone / center line — can be used as an additional cue
+- **iscrowd:** always 0 (single filament)
 
-### Lokal Path
+### Local Path
 
 ```
 /home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026
@@ -171,7 +171,7 @@ MAGFiLO_1.0_Kaggle_2026/          (750.97 MB, 888 dosya)
 
 ---
 
-## 📤 Submission Formatı
+## 📤 Submission Format
 
 ```csv
 filament_id,segmentation_rle
@@ -180,12 +180,12 @@ filament_id,segmentation_rle
 20150125172714Mh_3,YQNEgn1...BH6^
 ```
 
-- Her satır = 1 filament tahmini
-- `filament_id` = `{görüntü_adı}_{sıra_no}` (sıra önemli değil, overlap ile eşleştiriliyor)
-- `segmentation_rle` = pycocotools COCO RLE formatı (Fortran order!)
-- Görüntü boyutu sabit: 2048×2048
+- Each row = 1 filament prediction
+- `filament_id` = `{image_name}_{sequence_no}` (order does not matter, matching is done by overlap)
+- `segmentation_rle` = pycocotools COCO RLE format (Fortran order!)
+- Image size is fixed: 2048×2048
 
-**RLE dönüşümü:**
+**RLE conversion:**
 ```python
 from pycocotools import mask as coco_mask
 import numpy as np
@@ -194,36 +194,36 @@ rle = coco_mask.encode(np.asfortranarray(binary_mask.astype(np.uint8)))
 rle_string = rle["counts"].decode("utf-8")
 ```
 
-> **Önemli:** Organizatörler filament_id'deki sıra numarasına bakmaz. Tahmin edilen maskeleri ground truth ile **IoU overlap'e göre** eşleştirir.
+> **Important:** The organizers do not look at the sequence number in filament_id. They match the predicted masks to the ground truth **by IoU overlap**.
 
 ---
 
-## 📝 Final Teslim Gereksinimleri
+## 📝 Final Submission Requirements
 
-### 1) Kaggle Submit (Skor için)
-- CSV dosyasını Kaggle'a yükle
-- Günde 5 hak
-- Deadline: **15 Kasım 2026**
+### 1) Kaggle Submission (for the score)
+- Upload the CSV file to Kaggle
+- 5 submissions per day
+- Deadline: **November 15, 2026**
 
-### 2) Google Form (Final değerlendirme için)
-**Form linki:** https://docs.google.com/forms/d/e/1FAIpQLSfyrM4dhc8QzxR90PtF6fb018KPf0S0Cbf5hPqMuUognmzQsA/viewform
+### 2) Google Form (for the final evaluation)
+**Form link:** https://docs.google.com/forms/d/e/1FAIpQLSfyrM4dhc8QzxR90PtF6fb018KPf0S0Cbf5hPqMuUognmzQsA/viewform
 
-Form'da istenenler:
-- E-posta adresi
-- Tüm takım üyelerinin tam adı (`;` ile ayır)
-- Tüm üyelerin email adresleri
-- Kurum/üniversite (opsiyonel)
-- Ülkeler
-- **Public GitHub repo URL** (zorunlu)
-- **Kaggle submission CSV** (10 kez güncellenebilir, max 10 MB)
-- **Teknik rapor PDF** (10 kez güncellenebilir, max 10 MB)
+What the form asks for:
+- Email address
+- Full names of all team members (separated by `;`)
+- Email addresses of all members
+- Institution/university (optional)
+- Countries
+- **Public GitHub repo URL** (required)
+- **Kaggle submission CSV** (can be updated 10 times, max 10 MB)
+- **Technical report PDF** (can be updated 10 times, max 10 MB)
 
-### 3) Teknik Rapor (PDF)
-- **4 sayfa** (Acknowledgment ve References hariç)
-- Overleaf şablonu: https://www.overleaf.com/project/6a735222766a5d9bbc55c686
-- Bölümler: Abstract, Introduction, Methodology, Evaluation, Acknowledgment, References
+### 3) Technical Report (PDF)
+- **4 pages** (excluding Acknowledgment and References)
+- Overleaf template: https://www.overleaf.com/project/6a735222766a5d9bbc55c686
+- Sections: Abstract, Introduction, Methodology, Evaluation, Acknowledgment, References
 
-### 4) GitHub Repo (Zorunlu)
+### 4) GitHub Repo (Required)
 **Repo:** https://github.com/tugcekeskin/solar-filament-segmentation-2026-vprg
 
 ```
@@ -244,65 +244,65 @@ solar-filament-segmentation-2026-vprg/
 
 ---
 
-## 🛠️ Teknik Plan
+## 🛠️ Technical Plan
 
 ### Pipeline
 
 ```
 1. Preprocessing
-   ├── Grayscale → 3 kanal (ImageNet normalization için)
-   ├── CLAHE (kontrast artırma)
+   ├── Grayscale → 3 channels (for ImageNet normalization)
+   ├── CLAHE (contrast enhancement)
    ├── Resize (2048 → 1024)
-   └── Spine mask (ek kanal olarak veya loss fonksiyonunda ağırlık olarak — OTİ'den ilham alındı)
+   └── Spine mask (as an extra channel or as a weight in the loss function — inspired by OTH)
 
 2. Model
    ├── Encoder: ResNet34 (pretrained ImageNet)
    ├── Decoder: U-Net
-   └── Loss: Focal Loss + Dice Loss                (OTİ)
+   └── Loss: Focal Loss + Dice Loss                (OTH)
 
 3. Postprocessing
    ├── Threshold
-   ├── Connected Components (instance ayırma)
-   ├── Min area filtresi (küçük gürültüyü at)
-   ├── Unidentifiable filamentleri filtrele         (OTİ)
+   ├── Connected Components (instance separation)
+   ├── Min area filter (discard small noise)
+   ├── Filter out Unidentifiable filaments         (OTH)
    └── RLE encoding → submission.csv
 ```
 
-### Organizatörden Teknik İpuçları (OTİ)
+### Organizer Technical Hints (OTH)
 
-1. **Fine-scale yapılara odaklan** — barbs (filament kenarındaki ince çıkıntılar) yakalamak kritik
-2. **Focal Loss + Dice Loss** kombinasyonu iyi çalışıyor
-3. **Spine annotation'larını** eğitimde ek ipucu olarak kullanabilirsin
-4. **Unidentifiable filamentleri filtrele** — tahmin etmek FP artırır, PQ düşürür
-5. **Consensus'a odaklan** — az annotator'ın işaretlediği filamentleri tahmin etmek FP artırır
-6. **Kalite > PQ skoru** — nitel değerlendirme önemli, pipeline iyi açıklanmalı
-7. **Hesaplama verimliliği** de değerlendiriliyor (~1 sn/görüntü hedef)
+1. **Focus on fine-scale structures** — capturing barbs (thin protrusions on the filament edge) is critical
+2. The **Focal Loss + Dice Loss** combination works well
+3. You can use the **spine annotations** as an additional cue during training
+4. **Filter out Unidentifiable filaments** — predicting them increases FP and lowers PQ
+5. **Focus on consensus** — predicting filaments marked by only a few annotators increases FP
+6. **Quality > PQ score** — the qualitative evaluation matters, the pipeline must be well explained
+7. **Computational efficiency** is also evaluated (~1 s/image target)
 
-### Kullanılacak Kütüphaneler
+### Libraries to Use
 
 ```
 torch==2.14.1               ← deep learning
 segmentation_models_pytorch  ← U-Net
 albumentations               ← augmentation
-pycocotools                  ← RLE dönüşümü
-opencv-python                ← görüntü işleme
+pycocotools                  ← RLE conversion
+opencv-python                ← image processing
 ```
 
 ---
 
-## 🖥️ Kurulum
+## 🖥️ Setup
 
 ```bash
 conda create -n filament python=3.12 -y
 conda activate filament
 
-# PyTorch (CUDA versiyonuna göre)
+# PyTorch (depending on CUDA version)
 # CUDA 13.0:
 pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu130
 # CUDA 12.1:
 pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu121
 
-# Geri kalanlar
+# The rest
 pip install -r requirements.txt
 ```
 
@@ -317,110 +317,110 @@ print(f'GPU: {torch.cuda.get_device_name(0)}')
 "
 ```
 
-### Çalışma Ortamı
+### Working Environment
 
-| | Lokal (4090) | Kaggle |
+| | Local (4090) | Kaggle |
 |---|---|---|
-| Kullanım | Model eğitimi | Final inference + submit |
+| Usage | Model training | Final inference + submit |
 | GPU | RTX 4090 (24GB) | T4 x2 (16GB) |
-| Hız | 3-4x daha hızlı | Yavaş |
-| Limit | Sınırsız | ~30 saat/hafta |
+| Speed | 3-4x faster | Slow |
+| Limit | Unlimited | ~30 hours/week |
 
 ---
 
-## 🏆 Mevcut En İyi Skorlar (Dürüst Yöntemler)
+## 🏆 Current Best Scores (Honest Methods)
 
-| Skor | Yöntem |
+| Score | Method |
 |---|---|
-| 0.49 | Bilinmiyor (noisyislands — Kaggle Discussion) |
-| 0.48 | Fine-scale odaklı U-Net (Spaghetto99 — Kaggle Discussion) |
-| 0.45 | ResNet34 + EfficientNetV2-S ensemble (OOF Notebook — Kaggle Code sekmesi) |
+| 0.49 | Unknown (noisyislands — Kaggle Discussion) |
+| 0.48 | Fine-scale focused U-Net (Spaghetto99 — Kaggle Discussion) |
+| 0.45 | ResNet34 + EfficientNetV2-S ensemble (OOF Notebook — Kaggle Code tab) |
 | 0.36 | YOLO11s + SeedRefiner U-Net (Sunjnn — GitHub) |
 | 0.27 | U-Net ResNet34, 35 epoch (Sunjnn — GitHub) |
-| 0.18 | U-Net ResNet34, 5 epoch (Baseline — Kaggle Code sekmesi) |
+| 0.18 | U-Net ResNet34, 5 epochs (Baseline — Kaggle Code tab) |
 
-**En iyi doğrulanmış sonuç (Spaghetto99, Discussion):**
+**Best verified result (Spaghetto99, Discussion):**
 ```
 PQ:  0.4843
-SQ:  0.6870  (maske kalitesi)
+SQ:  0.6870  (mask quality)
 RQ:  0.7049  (detection F1)
 TP: 855 | FP: 313 | FN: 403
-Inference: ~1.13 sn/görüntü
+Inference: ~1.13 s/image
 ```
 
 ---
 
-## 🤖 Claude Code İçin Talimatlar
+## 🤖 Instructions for Claude Code
 
-### Mevcut Durum
-- EDA tamamlandı (`notebooks/01_eda.ipynb`)
-- Ortam kurulu (conda: `filament`, PyTorch 2.14.1, CUDA 13.0, RTX 4090)
-- Veri hazır: `/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026`
+### Current State
+- EDA completed (`notebooks/01_eda.ipynb`)
+- Environment set up (conda: `filament`, PyTorch 2.14.1, CUDA 13.0, RTX 4090)
+- Data ready: `/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026`
 - Repo: `/home/baykar/Desktop/FLAMENT/solar-filament-segmentation-2026-vprg`
 
-### Görev
-Aşağıdaki deney planını sırayla uygula. Her deney bitince:
-1. Sonuçları `results.md`'ye yaz (format aşağıda)
-2. GitHub'a push et (`git add . && git commit -m "results: run X" && git push`)
-3. Sonuçları analiz et
-4. Bir sonraki deneye geç veya optimize et
+### Task
+Apply the experiment plan below in order. After each experiment:
+1. Write the results to `results.md` (format below)
+2. Push to GitHub (`git add . && git commit -m "results: run X" && git push`)
+3. Analyze the results
+4. Move on to the next experiment or optimize
 
-### Karar Yetkisi
-- Deney planı biterse kendi inisiyatifinle yeni deneyler tasarla
-- PQ artışı < 0.005 ise o yönü bırak, farklı yaklaşım dene
-- Arkadaşımızın bulgularını dikkate al ama kendi özgün katkımızı da ekle
-- **Deadline: 15 Kasım 09:00 TR saati** — son 3 saati rapor + form için bırak
-- Tüm kararlarını `results.md`'ye "Neden bu değişikliği yaptım" notu ile kaydet
+### Decision Authority
+- If the experiment plan is finished, design new experiments on your own initiative
+- If the PQ gain is < 0.005, drop that direction and try a different approach
+- Take our friend's findings into account, but also add our own original contribution
+- **Deadline: November 15, 09:00 Turkey time** — leave the last 3 hours for the report + form
+- Record all your decisions in `results.md` with a "Why I made this change" note
 
-### Arkadaşımızın Bulgularından Öğrendiklerimiz
-- CLAHE → no gain (deneme)
-- Mask thinning (5×5 cross erosion) → +0.073 PQ (kritik!)
+### What We Learned from Our Friend's Findings
+- CLAHE → no gain (tried)
+- Mask thinning (5×5 cross erosion) → +0.073 PQ (critical!)
 - YOLO11m > YOLO11s (+0.005 PQ)
 - 1536px > 1280px > 1024px
 - Flip TTA → +0.006
 - U-Net crop refiner → +0.004
-- 150 epoch → no gain (80 yeterli)
-- Consensus filtering → noise seviyesinde
+- 150 epochs → no gain (80 is enough)
+- Consensus filtering → at noise level
 
-### Özgün Katkımız
-Spine-guided loss — spine maskesini loss fonksiyonunda piksel ağırlığı olarak kullanmak. Kimse denememiş, raporda güçlü bir katkı olur.
+### Our Original Contribution
+Spine-guided loss — using the spine mask as a per-pixel weight in the loss function. Nobody has tried it, so it would be a strong contribution in the report.
 
 ---
 
-## 🧪 Deney Planı
+## 🧪 Experiment Plan
 
-### Deney Sırası
+### Experiment Order
 
 **Run 1 — YOLO11s-seg Baseline**
 - imgsz: 1024, epochs: 80, batch: 4
 - conf: 0.30, NMS: 0.3, min_area: 20
 - Mask thinning: 5×5 cross erosion
-- Hedef: ~0.35 PQ
+- Target: ~0.35 PQ
 
 **Run 2 — YOLO11s-seg + Thinning Grid**
-- Run 1 üzerine farklı erosion parametreleri dene (3×3, 5×5, 7×7)
-- conf ve min_area grid'i
-- Hedef: ~0.38 PQ
+- Try different erosion parameters on top of Run 1 (3×3, 5×5, 7×7)
+- conf and min_area grid
+- Target: ~0.38 PQ
 
 **Run 3 — YOLO11m-seg**
 - imgsz: 1280, epochs: 80
-- En iyi thinning parametreleri
-- Hedef: ~0.42 PQ
+- Best thinning parameters
+- Target: ~0.42 PQ
 
 **Run 4 — YOLO11m-seg + Flip TTA**
 - id+h+v flip TTA
-- Hedef: ~0.45 PQ
+- Target: ~0.45 PQ
 
-**Run 5 — U-Net + Spine-guided Loss (Özgün Katkı)**
+**Run 5 — U-Net + Spine-guided Loss (Original Contribution)**
 - Encoder: ResNet34, pretrained ImageNet
-- Spine maskesi loss'ta piksel ağırlığı olarak
+- Spine mask as a per-pixel weight in the loss
 - Loss: Focal + Dice + Spine-weighted
-- Hedef: Arkadaşından farklı özgün yaklaşım
+- Target: An original approach different from your friend's
 
-**Run 6+ — Serbest Deney**
-- Önceki sonuçlara göre kendi inisiyatifinle devam et
+**Run 6+ — Free Experimentation**
+- Continue on your own initiative based on previous results
 
-### Results.md Formatı
+### Results.md Format
 
 ```markdown
 # Experiment Results
@@ -465,41 +465,41 @@ Spine-guided loss — spine maskesini loss fonksiyonunda piksel ağırlığı ol
 - Val RQ: ...
 - TP: ... | FP: ... | FN: ...
 - Train time: ... min
-- Inference: ... sn/görüntü
+- Inference: ... s/image
 - GPU memory: ... GB
 
-#### Neden Bu Değişikliği Yaptım
+#### Why I Made This Change
 ...
 ```
 
 ---
 
-## 📜 Önemli Kurallar
+## 📜 Important Rules
 
-| Kural | Detay |
+| Rule | Detail |
 |---|---|
-| Takım büyüklüğü | Maks. 5 kişi |
-| Günlük submit | 5 hak |
-| Final submit seçimi | 2 submission |
-| Dış veri | ✅ Serbest (herkese açık olmalı) |
-| Pretrained model | ✅ Serbest (ImageNet vb.) |
-| GONG arşivi | ✅ Onaylandı (pretraining için) |
-| AI ile kod yazma | ✅ Serbest (ama çözümü anlayıp savunabilmelisin) |
-| Test verisini elle etiketlemek | ❌ Yasak |
-| Birden fazla Kaggle hesabı | ❌ Yasak |
+| Team size | Max. 5 people |
+| Daily submissions | 5 |
+| Final submission selection | 2 submissions |
+| External data | ✅ Allowed (must be publicly available) |
+| Pretrained models | ✅ Allowed (ImageNet etc.) |
+| GONG archive | ✅ Approved (for pretraining) |
+| Writing code with AI | ✅ Allowed (but you must understand and be able to defend the solution) |
+| Hand-labeling test data | ❌ Prohibited |
+| Multiple Kaggle accounts | ❌ Prohibited |
 
 ---
 
-## 🔗 Önemli Linkler
+## 🔗 Important Links
 
 | | Link |
 |---|---|
-| Yarışma sayfası | https://www.kaggle.com/competitions/filament-segmentation-2026 |
+| Competition page | https://www.kaggle.com/competitions/filament-segmentation-2026 |
 | Leaderboard | https://www.kaggle.com/competitions/filament-segmentation-2026/leaderboard |
 | Discussion | https://www.kaggle.com/competitions/filament-segmentation-2026/discussion |
 | **Final Submission Formu** | https://docs.google.com/forms/d/e/1FAIpQLSfyrM4dhc8QzxR90PtF6fb018KPf0S0Cbf5hPqMuUognmzQsA/viewform |
-| **Overleaf Rapor Şablonu** | https://www.overleaf.com/project/6a735222766a5d9bbc55c686 |
-| **GitHub Repo** | https://github.com/tugcekeskin/solar-filament-segmentation-2026-vprg |
+| **Final Submission Form** | https://docs.google.com/forms/d/e/1FAIpQLSfyrM4dhc8QzxR90PtF6fb018KPf0S0Cbf5hPqMuUognmzQsA/viewform |
+| **Overleaf Report Template** | https://www.overleaf.com/project/6a735222766a5d9bbc55c686 |
 | Self-evaluation Notebook | https://www.kaggle.com/code/azimahmadzadeh/self-evaluation-notebook |
 | SABID Workshop | https://sites.google.com/view/sabid2026/home |
 | IEEE BigData 2026 | https://bigdataieee.org/BigData2026/cup/ |

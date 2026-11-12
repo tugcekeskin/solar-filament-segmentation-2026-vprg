@@ -1,0 +1,78 @@
+{
+ "baseline": {
+  "pq_scorer": 0.473959384271101,
+  "tp": 1060,
+  "fp": 485,
+  "fn": 485,
+  "pq_from_per_view": 0.47395938427110096,
+  "N": 732.267248698851,
+  "D": 1545.0
+ },
+ "counts": {
+  "images": 142,
+  "views": 220,
+  "dates": 133,
+  "instruments": {
+   "Bh": 25,
+   "Ch": 24,
+   "Lh": 23,
+   "Mh": 25,
+   "Th": 26,
+   "Uh": 19
+  },
+  "GT_all": 1545,
+  "FN_all": 485,
+  "M": 165,
+  "F": 65,
+  "M_over_FN": 0.3402061855670103,
+  "M_over_GT": 0.10679611650485436,
+  "F_over_M": 0.3939393939393939,
+  "F_over_GT": 0.042071197411003236,
+  "categories": {
+   "fragment": 65,
+   "shifted": 31,
+   "too_big": 26,
+   "merge": 24,
+   "split": 19
+  },
+  "preds_hitting_2plus_gt": 1,
+  "gt_hit_by_2plus_preds": 0
+ },
+ "iv_fragment_shape": {
+  "median_len_ratio_pred_over_gt": 0.5422535211267606,
+  "median_width_ratio_pred_over_gt": 0.8983092812676853,
+  "median_gt_skel_len": 289.0,
+  "median_missing_len": 113.0
+ },
+ "i_continuation": {
+  "32": {
+   "pq": 0.4978319131864362,
+   "gain": 0.0238725289153352,
+   "tp": 1104,
+   "fp": 441,
+   "fn": 441
+  },
+  "64": {
+   "pq": 0.4978582967473803,
+   "gain": 0.023898912476279288,
+   "tp": 1097,
+   "fp": 448,
+   "fn": 448
+  },
+  "96": {
+   "pq": 0.4986846035143737,
+   "gain": 0.0247252192432727,
+   "tp": 1097,
+   "fp": 448,
+   "fn": 448
+  }
+ },
+ "ii_candidate_union": {
+  "pq": 0.4845867772466937,
+  "gain": 0.010627392975592675,
+  "tp": 1089,
+  "fp": 453,
+  "fn": 456,
+  "candidates_used": 276
+ }
+}
