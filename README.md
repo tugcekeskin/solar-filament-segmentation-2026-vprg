@@ -27,7 +27,8 @@ It scores **0.474 PQ** on our date-grouped validation fold and **0.40 on the pub
 
 - **Validation:** fold 0 of `data/splits/split_v1.json`, grouped by observation date. It has 142 images, 220 annotator views and 1545 filaments, scored with the organizer metric (per-view PQ, IoU > 0.5).
 - **Baseline runs:** independent YOLO11s/m baseline runs on a separate 85/15 split are logged in [`results.md`](results.md). They used `src/train.py` and `src/predict.py`; their validation PQ ranges from 0.387 to 0.424.
-- **Full write-up:** the report is in [`docs/report/`](docs/report/). The experiment log and the negative results are in [`reports/`](reports/).
+- **Full write-up:** the report is in [`docs/report/`](docs/report/), using the competition's ACM template (`main.tex`, `preamble.tex`, `main.bib`, `figures/`). The experiment log and the negative results are in [`reports/`](reports/).
+- **Report numbers:** `scripts/report_stats.py` gives stage PQ with bootstrap CIs (`reports/report_stats.json`); `scripts/report_figures.py` draws the figures.
 
 ## Pipeline
 
@@ -65,7 +66,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
 
 **Hardware.** The pipeline expects a CUDA GPU; we used one RTX 4080 SUPER with 16 GB. The detector runs at 1536 px with batch 2 and the refiners run under fp16 autocast.
 
-**Hugging Face model.** The SAM refiner builds its base architecture from the Hugging Face `facebook/sam-vit-base` model. That model must be in the HF cache or downloadable on first use.
+**No downloads needed.** Every file the pipeline loads is in this repository, including the base SAM ViT-B weights (`facebook/sam-vit-base`, Apache-2.0), committed as shards under 100 MB in `weights/sam_vit_base/`. Inference runs with `HF_HUB_OFFLINE=1`.
 
 **Data layout.** The competition data is expected under `data/raw/MAGFiLO_1.0_Kaggle_2026/`:
 - `train/train_images`
@@ -80,7 +81,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
     --out submission.csv --workdir work/
 ```
 
-- **`notebooks/inference.ipynb`** runs the same command from a notebook.
+- **`notebooks/inference.ipynb`** runs the whole pipeline stage by stage (detection passes, fusion, both refiners, blend, decoding, validation, example predictions). It is committed with the outputs of a full run on the 180 test images.
 - **Options:**
   - `--device`;
   - `--yolo`, `--unet`, `--sam`, `--calib` override the files in `weights/` and `configs/`;
@@ -96,7 +97,8 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
 |---|---|---|
 | `weights/yolo11m_seg_1536.pt` | YOLO11m-seg detector, trained on the fold-0 training split at imgsz 1536 | 45 MB |
 | `weights/unet_refiner.pt` | U-Net (ResNet34 encoder) crop refiner | 98 MB |
-| `weights/sam_lora_refiner.pt` | SAM ViT-B LoRA adapters and trained heads; the base comes from `facebook/sam-vit-base` | 19 MB |
+| `weights/sam_lora_refiner.pt` | SAM ViT-B LoRA adapters and trained prompt encoder / mask decoder | 19 MB |
+| `weights/sam_vit_base/` | base SAM ViT-B weights (`facebook/sam-vit-base`, Apache-2.0) in 5 shards, plus `config.json` | 375 MB |
 | `configs/calib.json` | post-processing parameters calibrated on the validation fold | < 1 KB |
 | `configs/y11m_1536_train_args.yaml` | full Ultralytics training arguments of the detector | < 2 KB |
 
@@ -111,7 +113,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
 | Detector | `python scripts/train.py --model yolo11m-seg.pt --imgsz 1536 --name y11m_1536` (80 epochs, AdamW, lr0 1e-3, batch 2, seed 0) |
 | Training proposals for the refiners | `python scripts/predict.py --weights runs/y11m_1536/weights/best.pt --subset train --imgsz 1536 --soft --out-cache artifacts/refiner/train_raw.pkl` |
 | U-Net refiner | `python scripts/train_refiner.py --out artifacts/refiner/refiner.pt` (25 epochs, batch 32, AdamW 3e-4, cosine; BCE + Dice) |
-| SAM-LoRA refiner | `python scripts/train_refiner.py --arch sam --out artifacts/refiner_sam/sam_refiner.pt` (LoRA rank 16) |
+| SAM-LoRA refiner | `python scripts/train_refiner.py --arch sam --epochs 3 --batch 2 --lr 1e-4 --out artifacts/refiner_sam/sam_refiner.pt` (LoRA rank 16, about 50 min per epoch) |
 | Post-processing calibration | `python scripts/calibrate.py` on the validation caches |
 
 **Validation helpers:**
@@ -128,7 +130,7 @@ configs/           calibrated post-processing parameters and detector training a
 weights/           final model weights
 notebooks/         01_eda.ipynb (exploratory analysis), inference.ipynb (end-to-end pipeline)
 tests/             unit tests (metric, RLE, post-processing, fusion)
-docs/report/       report (LaTeX)
+docs/report/       report (ACM LaTeX template, figures, bibliography)
 docs/              data analysis and error analysis notes, figures, project guide
 reports/           geometry audit (G0), path completion (G1) and Skeleton-Recall (G2) experiment reports
 src/*.py           first baseline (YOLO11s/m, separate split); see results.md
@@ -160,5 +162,5 @@ Each item below was measured on the same validation fold. Details are in the rep
 
 - Code in this repository: see `LICENSE`.
 - Dependencies keep their own licences; Ultralytics (YOLO) is AGPL-3.0.
-- The base SAM weights (`facebook/sam-vit-base`) are Apache-2.0.
+- The base SAM weights (`facebook/sam-vit-base`), redistributed in `weights/sam_vit_base/`, are Apache-2.0.
 - No external annotations or external training data were used.

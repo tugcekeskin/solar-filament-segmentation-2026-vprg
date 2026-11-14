@@ -15,11 +15,16 @@ mask decoder. The ViT weights themselves stay frozen.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 SAM_ID = "facebook/sam-vit-base"
+# Local copy of the base SAM ViT-B weights (Apache-2.0), committed as <100 MB shards so that inference
+# needs no download. Falls back to the Hugging Face hub when the directory is absent.
+LOCAL_SAM = Path(__file__).resolve().parents[2] / "weights" / "sam_vit_base"
 MEAN = torch.tensor([123.675, 116.28, 103.53]).view(1, 3, 1, 1)
 STD = torch.tensor([58.395, 57.12, 57.375]).view(1, 3, 1, 1)
 
@@ -30,7 +35,17 @@ class SamRefiner(nn.Module):
         from peft import LoraConfig, inject_adapter_in_model
         from transformers import SamConfig, SamModel
 
-        self.sam = SamModel.from_pretrained(SAM_ID) if pretrained else SamModel(SamConfig.from_pretrained(SAM_ID))
+        if (LOCAL_SAM / "config.json").exists():
+            self.sam = SamModel(SamConfig.from_json_file(str(LOCAL_SAM / "config.json")))
+            if pretrained:
+                base = {}
+                for f in sorted(LOCAL_SAM.glob("part*.pt")):
+                    base.update(torch.load(f, map_location="cpu"))
+                res = self.sam.load_state_dict(base, strict=False)
+                assert not res.unexpected_keys and all("positional_embedding" in k or "shared_image_embedding" in k
+                                                       for k in res.missing_keys), res
+        else:
+            self.sam = SamModel.from_pretrained(SAM_ID) if pretrained else SamModel(SamConfig.from_pretrained(SAM_ID))
         for p in self.sam.parameters():
             p.requires_grad_(False)
         cfg = LoraConfig(r=rank, lora_alpha=2 * rank, lora_dropout=0.05, target_modules=["qkv"])

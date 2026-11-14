@@ -11,6 +11,8 @@ preds_cache/
 !weights/yolo11m_seg_1536.pt
 !weights/unet_refiner.pt
 !weights/sam_lora_refiner.pt
+!weights/sam_vit_base/
+!weights/sam_vit_base/*.pt
 .venv/
 data/
 artifacts/
