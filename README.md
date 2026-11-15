@@ -73,7 +73,33 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
 - `test/test_images`
 - `train/MAGFiLO_1.0_Annotations_kaggle2026_train.json`
 
-## Inference (one command)
+## Inference
+
+Both routes below run the same pipeline from the committed weights, need no downloads, and write `submission.csv` in the repository root.
+
+### Notebook
+
+[`notebooks/inference.ipynb`](notebooks/inference.ipynb) runs the full pipeline stage by stage:
+
+| Section | Stage | Output in `work/` |
+|---|---|---|
+| 0 | Setup: paths, `HF_HUB_OFFLINE=1`, list of test images | - |
+| 1 | YOLO11m-seg at 1536 px, three passes (identity, horizontal flip, vertical flip), soft masks | `raw.pkl`, `raw_h.pkl`, `raw_v.pkl` |
+| 2 | Instance fusion over the three passes (IoU >= 0.5) | `flip3.pkl` |
+| 3 | U-Net and SAM ViT-B + LoRA crop refiners | `unet.pkl`, `sam.pkl` |
+| 4 | 50/50 soft-mask blend | `blend.pkl` |
+| 5 | Decoding with `configs/calib.json`, overlap resolution, RLE, format validation | `submission.csv` |
+| 6 | Predicted contours on four test images | - |
+
+- **What is committed:** the notebook is committed with the outputs of a full run on the 180 test images, so it can be read without running it.
+- **Running it in Jupyter:** open the notebook and run all cells. It works when started from `notebooks/` or from the repository root.
+- **Running it headless:**
+  ```bash
+  .venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/inference.ipynb
+  ```
+- **Other images:** set `FILSEG_IMAGES=/path/to/images` to use a different image directory. The default is `data/raw/MAGFiLO_1.0_Kaggle_2026/test/test_images`.
+
+### Script
 
 ```bash
 .venv/bin/python scripts/run_pipeline.py \
@@ -81,15 +107,17 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned ver
     --out submission.csv --workdir work/
 ```
 
-- **`notebooks/inference.ipynb`** runs the whole pipeline stage by stage (detection passes, fusion, both refiners, blend, decoding, validation, example predictions). It is committed with the outputs of a full run on the 180 test images.
 - **Options:**
   - `--device`;
   - `--yolo`, `--unet`, `--sam`, `--calib` override the files in `weights/` and `configs/`;
   - `--imgsz 1536`, `--batch 2`, `--workers 8` (number of fusion processes);
   - `--force` recomputes cached stages.
 - **Cached stages:** intermediate caches are kept in `--workdir` and reused on re-runs.
-- **Run time:** the full test set (180 images) takes a few minutes.
-- **Reproducibility:** `run_pipeline.py` reproduces our public-0.40 submission. It gives the same 1217 rows, and pooled PQ is 0.9995 when the original file is used as ground truth. The residual comes from fp16 numerical noise in the refiners.
+
+### Run time and reproducibility
+
+- **Run time:** the full test set (180 images) takes about 13 minutes on one RTX 4080 SUPER.
+- **Reproducibility:** both routes reproduce our public-0.40 submission. They give the same 1217 rows, and pooled PQ is 0.9995 when the original file is used as ground truth. The residual comes from fp16 numerical noise in the refiners.
 
 ## Model weights
 
