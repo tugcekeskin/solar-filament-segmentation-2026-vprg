@@ -13,7 +13,7 @@ Caveat: postprocess params are tuned on this same val set, so the best-config nu
 |---|------|-------|--------|--------|--------|--------|----|----|----|-------|
 | 1 | 2026-11-12 | YOLO11s-seg | 1024px, 80ep, plan cfg (conf .3, NMS .3, thin 5x5) | 0.387 | 0.651 | 0.594 | 818 | 599 | 518 | baseline as specified |
 | 2 | 2026-11-12 | YOLO11s-seg (Run 1 weights) | conf .4, NMS .5, min_area 20, thin 3x3 | 0.422 | 0.662 | 0.637 | 800 | 375 | 536 | postprocess grid, no retraining |
-| 3 | 2026-11-12 | YOLO11m-seg | 1280px, 80ep, conf .5, NMS .5, min_area 20, thin 3x3 | 0.424 | 0.676 | 0.628 | 726 | 252 | 610 | küçük grid (6 cfg); kazanç Run 2'ye göre sadece +0.002 |
+| 3 | 2026-11-12 | YOLO11m-seg | 1280px, 80ep, conf .5, NMS .5, min_area 20, thin 3x3 | 0.424 | 0.676 | 0.628 | 726 | 252 | 610 | small grid (6 cfg); gain over Run 2 only +0.002 |
 
 ---
 
@@ -38,8 +38,8 @@ Caveat: postprocess params are tuned on this same val set, so the best-config nu
 - Val PQ 0.387 | SQ 0.651 | RQ 0.594 | TP 818 FP 599 FN 518
 - Train time: ~9 min | Inference: 0.10 s/img (model + mask transfer, excludes postproc) | GPU memory: 0.51 GB (inference)
 
-#### Neden Bu Değişikliği Yaptım
-Plan'daki baseline'ı aynen uyguladım. Notlar: (a) Ultralytics yazdığı `runs/segment/runs/run1`. (b) Plan'ın hedefi ~0.35'ti; 0.387 aldık.
+#### Why I made this change
+The baseline from the plan was implemented as-is. Notes: (a) Ultralytics writes to `runs/segment/runs/run1`. (b) The plan's target was ~0.35; we got 0.387.
 
 ### Run 2 — Postprocess grid (conf x NMS x min_area x thinning), 64 configs
 **Date:** 2026-11-12. Same weights as Run 1.
@@ -47,43 +47,43 @@ Plan'daki baseline'ı aynen uyguladım. Notlar: (a) Ultralytics yazdığı `runs
 - Higher conf cuts FP strongly (599->375) for a small TP loss; 3x3 thinning beats 5x5 on my val (friend's 5x5 gain was on his own setup/resolution).
 - Full grid: `runs/segment/runs/run1/weights/best_grid.json` (not committed; reproduce with `python src/evaluate.py`).
 
-#### Neden Bu Değişikliği Yaptım
-Plan: Run 1 üzerinde erosion/conf/min_area grid'i. Run 1'in cache'lenmiş ham tahminleri üzerinde yapıldığı için yeniden eğitim gerekmedi. Not: 0.422 val üzerinde seçildi; Kaggle'a göndermeden önce Run 3 ile teyit edilecek.
+#### Why I made this change
+Plan: erosion/conf/min_area grid on top of Run 1. Since it was run on Run 1's cached raw predictions, no retraining was needed. Note: 0.422 was selected on val; it will be confirmed with Run 3 before submitting to Kaggle.
 
 ### Run 3 — YOLO11m-seg, 1280px
 **Date:** 2026-11-12
 
 #### Preprocessing
-- Ham grayscale->3ch, CLAHE yok; Ultralytics resize 2048->1280.
+- Raw grayscale->3ch, no CLAHE; Ultralytics resizes 2048->1280.
 
 #### Model
-- YOLO11m-seg, COCO pretrained, imgsz 1280, 80 epoch, batch 4, Ultralytics varsayılan LR/optimizer, aynı train/val split.
+- YOLO11m-seg, COCO pretrained, imgsz 1280, 80 epochs, batch 4, Ultralytics default LR/optimizer, same train/val split.
 
 #### Postprocessing
-- Conf 0.5, mask NMS IoU 0.5, min area 20, thinning 3x3 cross, TTA yok.
+- Conf 0.5, mask NMS IoU 0.5, min area 20, thinning 3x3 cross, no TTA.
 
 #### Results
 - Val PQ 0.424 | SQ 0.676 | RQ 0.628 | TP 726 FP 252 FN 610
-- Train time: ~23.5 min | Inference süresi bu run için kaydedilmedi (evaluate çıktısı hata nedeniyle kesildi) | GPU: ~10 GB eğitimde
-- Diğer grid noktaları: conf .4/5x5 -> 0.402; conf .3/5x5 -> 0.395; conf .5/5x5 -> 0.393
-- Test CSV: `docs/submission_run3.csv` (953 filament, 175/180 test görüntüsünde tahmin var, check_submission OK)
+- Train time: ~23.5 min | Inference time was not recorded for this run (evaluate output was cut off by an error) | GPU: ~10 GB for training
+- Other grid points: conf .4/5x5 -> 0.402; conf .3/5x5 -> 0.395; conf .5/5x5 -> 0.393
+- Test CSV: `docs/submission_run3.csv` (953 filaments, predictions on 175/180 test images, check_submission OK)
 
-#### Neden Bu Değişikliği Yaptım
-Plan: büyük model + yüksek çözünürlük (arkadaşın bulgusu: 11m > 11s, 1536 > 1280 > 1024). Grid'i küçülttüm (conf .3/.4/.5, NMS .5, area 20, thin 3/5) çünkü Run 2'de min_area ve NMS farksızdı ve tam grid ~15 dk sürüyor.
-**Dürüst yorum:** Run 2'ye göre kazanç +0.002 PQ, yani <0.005 eşiğinin altında ve 106 val görüntüsünde gürültü seviyesinde. En iyi conf 0.5 grid'in kenarında, daha yüksek conf denenmedi. 11m, SQ'yu biraz artırdı (.662->.676) ama daha çok tahmini eledi (RQ benzer). Plandaki ~0.42 hedefine nominal olarak ulaşıldı, ama bunun model farkından geldiği söylenemez.
+#### Why I made this change
+Plan: bigger model + higher resolution (friend's finding: 11m > 11s, 1536 > 1280 > 1024). I shrank the grid (conf .3/.4/.5, NMS .5, area 20, thin 3/5) because min_area and NMS made no difference in Run 2 and the full grid takes ~15 min.
+**Honest comment:** The gain over Run 2 is +0.002 PQ, i.e. below the <0.005 threshold and within noise on 106 val images. The best conf 0.5 is at the edge of the grid; higher conf was not tried. 11m raised SQ a bit (.662->.676) but also discarded more predictions (RQ similar). The ~0.42 target in the plan was nominally reached, but this cannot be attributed to the model difference.
 
 ---
 
-## Submission dosyaları (`docs/`)
-Her run için yarışma formatında (`filament_id,segmentation_rle`, COCO RLE, Fortran order, 2048x2048) test tahmini: `docs/submission_runX.csv`
-(`python src/predict.py ...`; test verisi sadece inference için kullanılır, eğitim/tuning'de asla).
-- `submission_run1.csv` — Run 1 plan cfg (conf .3, NMS .3, thin 5x5): 1386 filament, 0.34 MB
-- `submission_run2.csv` — Run 2 en iyi cfg (conf .4, NMS .5, thin 3x3): 1167 filament, 0.32 MB
-- `submission_run3.csv` — Run 3 en iyi cfg (conf .5, NMS .5, thin 3x3): 953 filament, 0.26 MB
-Sonraki run'lar için aynı şekilde eklenecek. Kaggle'a henüz gönderilmedi (günlük 5 hak; gönderim kararı kullanıcıda).
+## Submission files (`docs/`)
+For each run, a test prediction in the competition format (`filament_id,segmentation_rle`, COCO RLE, Fortran order, 2048x2048): `docs/submission_runX.csv`
+(`python src/predict.py ...`; test data is used only for inference, never for training/tuning).
+- `submission_run1.csv` — Run 1 plan cfg (conf .3, NMS .3, thin 5x5): 1386 filaments, 0.34 MB
+- `submission_run2.csv` — Run 2 best cfg (conf .4, NMS .5, thin 3x3): 1167 filaments, 0.32 MB
+- `submission_run3.csv` — Run 3 best cfg (conf .5, NMS .5, thin 3x3): 953 filaments, 0.26 MB
+To be added the same way for later runs. Not yet submitted to Kaggle (5 submissions per day; the decision to submit is up to the user).
 
-### Her run sonrası zorunlu akış
-1. `python src/predict.py ... --out docs/submission_runX.csv` (sadece `test/test_images` üzerinde inference)
-2. `python src/check_submission.py docs/submission_runX.csv` — format + test seti + RLE decode doğrulaması (OK vermeden commit yok)
-3. results.md güncelle (Run Log satırı + Run Details + "Neden")
-4. Tek commit: `git add . && git commit -m "results: run X tamamlandı" && git push` — results.md ve CSV birlikte.
+### Required steps after each run
+1. `python src/predict.py ... --out docs/submission_runX.csv` (inference on `test/test_images` only)
+2. `python src/check_submission.py docs/submission_runX.csv` — verifies format + test set + RLE decoding (no commit until it reports OK)
+3. Update results.md (Run Log row + Run Details + "Why I made this change")
+4. Single commit: `git add . && git commit -m "results: run X completed" && git push` — results.md and the CSV together.

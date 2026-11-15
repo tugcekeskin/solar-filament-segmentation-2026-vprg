@@ -1,0 +1,198 @@
+{
+ "source_cache": "artifacts/rescore/val_blend01.pkl",
+ "params": {
+  "conf": 0.2,
+  "mask_thr": 0.35
+ },
+ "audit": {
+  "cache": "artifacts/rescore/val_blend01.pkl",
+  "conf": 0.2,
+  "mask_thr": 0.35,
+  "A_baseline": {
+   "pq": 0.473959384271101,
+   "tp": 1060,
+   "fp": 485,
+   "fn": 485,
+   "n_rows": 959,
+   "n_views": 220,
+   "n_gt": 1545
+  },
+  "B_fn_denominator": {
+   "> .5 (TP-covered)": 1060,
+   "no overlap (0)": 240,
+   "(.3, .5]": 165,
+   "(.05, .3]": 76,
+   "(0, .05]": 4,
+   "fn_total": 485
+  },
+  "C_near_miss": {
+   "(0.3,0.5]": {
+    "n": 165,
+    "shifted": 31,
+    "fragment": 65,
+    "too_big": 26,
+    "split": 19,
+    "merge": 24
+   },
+   "(0.05,0.5]": {
+    "n": 241,
+    "shifted": 37,
+    "fragment": 83,
+    "merge": 61,
+    "split": 33,
+    "too_big": 27
+   }
+  },
+  "C_fragment_missing_part": {
+   "n": 65,
+   "lateral_px": 38994,
+   "axial_px": 79346,
+   "axial_share": 0.6704918032786885
+  },
+  "D_oracle": {
+   "fragment@(0.3,0.5]": {
+    "pq": 0.49958872998179477,
+    "tp": 1097,
+    "fp": 448,
+    "fn": 448,
+    "gain": 0.02562934571069375
+   },
+   "fragment@(0.05,0.5]": {
+    "pq": 0.5063532470681926,
+    "tp": 1108,
+    "fp": 437,
+    "fn": 437,
+    "gain": 0.03239386279709161
+   },
+   "split@(0.3,0.5]": {
+    "pq": 0.4775466766817956,
+    "tp": 1059,
+    "fp": 455,
+    "fn": 486,
+    "gain": 0.003587292410694609
+   },
+   "split@(0.05,0.5]": {
+    "pq": 0.47196387194259465,
+    "tp": 1034,
+    "fp": 442,
+    "fn": 511,
+    "gain": -0.001995512328506366
+   },
+   "too_big@(0.3,0.5]": {
+    "pq": 0.48157167920875754,
+    "tp": 1077,
+    "fp": 468,
+    "fn": 468,
+    "gain": 0.007612294937656527
+   },
+   "too_big@(0.05,0.5]": {
+    "pq": 0.4820059625368711,
+    "tp": 1078,
+    "fp": 467,
+    "fn": 467,
+    "gain": 0.008046578265770099
+   },
+   "all@(0.3,0.5]": {
+    "pq": 0.5424433636557099,
+    "tp": 1139,
+    "fp": 376,
+    "fn": 406,
+    "gain": 0.06848397938460887
+   },
+   "all@(0.05,0.5]": {
+    "pq": 0.5554792036898337,
+    "tp": 1136,
+    "fp": 345,
+    "fn": 409,
+    "gain": 0.08151981941873271
+   }
+  },
+  "E_gt_overlap": {
+   "pairs": 2,
+   "views_with_overlap": 2,
+   "views": 220,
+   "overlap_px": 4979,
+   "gt_px": 3215390
+  }
+ },
+ "opportunity": {
+  "baseline": {
+   "pq_scorer": 0.473959384271101,
+   "tp": 1060,
+   "fp": 485,
+   "fn": 485,
+   "pq_from_per_view": 0.47395938427110096,
+   "N": 732.267248698851,
+   "D": 1545.0
+  },
+  "counts": {
+   "images": 142,
+   "views": 220,
+   "dates": 133,
+   "instruments": {
+    "Bh": 25,
+    "Ch": 24,
+    "Lh": 23,
+    "Mh": 25,
+    "Th": 26,
+    "Uh": 19
+   },
+   "GT_all": 1545,
+   "FN_all": 485,
+   "M": 165,
+   "F": 65,
+   "M_over_FN": 0.3402061855670103,
+   "M_over_GT": 0.10679611650485436,
+   "F_over_M": 0.3939393939393939,
+   "F_over_GT": 0.042071197411003236,
+   "categories": {
+    "fragment": 65,
+    "shifted": 31,
+    "too_big": 26,
+    "merge": 24,
+    "split": 19
+   },
+   "preds_hitting_2plus_gt": 1,
+   "gt_hit_by_2plus_preds": 0
+  },
+  "iv_fragment_shape": {
+   "median_len_ratio_pred_over_gt": 0.5422535211267606,
+   "median_width_ratio_pred_over_gt": 0.8983092812676853,
+   "median_gt_skel_len": 289.0,
+   "median_missing_len": 113.0
+  },
+  "i_continuation": {
+   "32": {
+    "pq": 0.4978319131864362,
+    "gain": 0.0238725289153352,
+    "tp": 1104,
+    "fp": 441,
+    "fn": 441
+   },
+   "64": {
+    "pq": 0.4978582967473803,
+    "gain": 0.023898912476279288,
+    "tp": 1097,
+    "fp": 448,
+    "fn": 448
+   },
+   "96": {
+    "pq": 0.4986846035143737,
+    "gain": 0.0247252192432727,
+    "tp": 1097,
+    "fp": 448,
+    "fn": 448
+   }
+  },
+  "ii_candidate_union": {
+   "pq": 0.4845867772466937,
+   "gain": 0.010627392975592675,
+   "tp": 1089,
+   "fp": 453,
+   "fn": 456,
+   "candidates_used": 276
+  }
+ },
+ "window_check": "fragments n=65: missing GT pixels inside refiner window 89468, outside 28872 -> outside share 24%\nGT connected components per fragment-GT: {np.int64(1): np.int64(65)}",
+ "loao": "baseline: PQ 0.4793 TP 631 FP 307 FN 242\nconsensus-oracle, all cands: PQ 0.4524 TP 598 FP 339 FN 275\nconsensus-oracle, cands >= 0.1: PQ 0.4709 TP 594 FP 261 FN 279"
+}
