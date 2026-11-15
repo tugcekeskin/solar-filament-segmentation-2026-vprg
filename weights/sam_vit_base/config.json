@@ -1,6 +1,6 @@
 {
   "_attn_implementation_autoset": false,
-  "_name_or_path": "/tmp/facebook/sam-vit-base",
+  "_name_or_path": "facebook/sam-vit-base",
   "add_cross_attention": false,
   "architectures": [
     "SamModel"

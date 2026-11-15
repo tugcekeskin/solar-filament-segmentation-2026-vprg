@@ -160,7 +160,7 @@ MAGFiLO_1.0_Kaggle_2026/          (750.97 MB, 888 files)
 ### Local Path
 
 ```
-/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026
+data/raw/MAGFiLO_1.0_Kaggle_2026
 ```
 
 ### Kaggle Path
@@ -328,65 +328,6 @@ print(f'GPU: {torch.cuda.get_device_name(0)}')
 
 ---
 
-## 🏆 Current Best Scores (Honest Methods)
-
-| Score | Method |
-|---|---|
-| 0.49 | Unknown (noisyislands — Kaggle Discussion) |
-| 0.48 | Fine-scale focused U-Net (Spaghetto99 — Kaggle Discussion) |
-| 0.45 | ResNet34 + EfficientNetV2-S ensemble (OOF Notebook — Kaggle Code tab) |
-| 0.36 | YOLO11s + SeedRefiner U-Net (Sunjnn — GitHub) |
-| 0.27 | U-Net ResNet34, 35 epoch (Sunjnn — GitHub) |
-| 0.18 | U-Net ResNet34, 5 epochs (Baseline — Kaggle Code tab) |
-
-**Best verified result (Spaghetto99, Discussion):**
-```
-PQ:  0.4843
-SQ:  0.6870  (mask quality)
-RQ:  0.7049  (detection F1)
-TP: 855 | FP: 313 | FN: 403
-Inference: ~1.13 s/image
-```
-
----
-
-## 🤖 Instructions for Claude Code
-
-### Current State
-- EDA completed (`notebooks/01_eda.ipynb`)
-- Environment set up (conda: `filament`, PyTorch 2.14.1, CUDA 13.0, RTX 4090)
-- Data ready: `/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026`
-- Repo: `/home/baykar/Desktop/FLAMENT/solar-filament-segmentation-2026-vprg`
-
-### Task
-Apply the experiment plan below in order. After each experiment:
-1. Write the results to `results.md` (format below)
-2. Push to GitHub (`git add . && git commit -m "results: run X" && git push`)
-3. Analyze the results
-4. Move on to the next experiment or optimize
-
-### Decision Authority
-- If the experiment plan is finished, design new experiments on your own initiative
-- If the PQ gain is < 0.005, drop that direction and try a different approach
-- Take our friend's findings into account, but also add our own original contribution
-- **Deadline: November 15, 09:00 Turkey time** — leave the last 3 hours for the report + form
-- Record all your decisions in `results.md` with a "Why I made this change" note
-
-### What We Learned from Our Friend's Findings
-- CLAHE → no gain (tried)
-- Mask thinning (5×5 cross erosion) → +0.073 PQ (critical!)
-- YOLO11m > YOLO11s (+0.005 PQ)
-- 1536px > 1280px > 1024px
-- Flip TTA → +0.006
-- U-Net crop refiner → +0.004
-- 150 epochs → no gain (80 is enough)
-- Consensus filtering → at noise level
-
-### Our Original Contribution
-Spine-guided loss — using the spine mask as a per-pixel weight in the loss function. Nobody has tried it, so it would be a strong contribution in the report.
-
----
-
 ## 🧪 Experiment Plan
 
 ### Experiment Order
@@ -415,62 +356,10 @@ Spine-guided loss — using the spine mask as a per-pixel weight in the loss fun
 - Encoder: ResNet34, pretrained ImageNet
 - Spine mask as a per-pixel weight in the loss
 - Loss: Focal + Dice + Spine-weighted
-- Target: An original approach different from your friend's
+- Target: an original loss that uses the annotated spines
 
 **Run 6+ — Free Experimentation**
-- Continue on your own initiative based on previous results
-
-### Results.md Format
-
-```markdown
-# Experiment Results
-
-## Run Log
-
-| # | Date | Model | Config | Val PQ | Val SQ | Val RQ | TP | FP | FN | Notes |
-|---|------|-------|--------|--------|--------|--------|----|----|----|-------|
-| 1 | 2026-11-12 | YOLO11s-seg | 1024px, 80ep | 0.xxx | 0.xxx | 0.xxx | - | - | - | baseline |
-
----
-
-## Run Details
-
-### Run 1 — ...
-**Date:** ...
-
-#### Preprocessing
-- ...
-
-#### Model
-- Architecture: ...
-- Pretrained: ...
-- imgsz: ...
-- Epochs: ...
-- Batch: ...
-- LR: ...
-
-#### Augmentation
-- ...
-
-#### Postprocessing
-- Confidence threshold: ...
-- Mask NMS IoU: ...
-- Min area: ...
-- Mask thinning: ...
-- TTA: ...
-
-#### Results
-- Val PQ: ...
-- Val SQ: ...
-- Val RQ: ...
-- TP: ... | FP: ... | FN: ...
-- Train time: ... min
-- Inference: ... s/image
-- GPU memory: ... GB
-
-#### Why I Made This Change
-...
-```
+- Further experiments chosen from the results of runs 1-5
 
 ---
 
