@@ -25,10 +25,10 @@ Kaggle team: **vprg-cv-term**
 | same, prior-window U-Net refiner | 0.477 | 0.39 |
 | YOLO11m-seg 1536 + flip TTA + mask thinning | 0.462 | 0.39 |
 | same detector trained on all 707 images | – | 0.39 |
-| Reference: public "LB 0.70" Mask R-CNN + refiner notebook, re-submitted | 0.416 | 0.34 |
+| Reference: public Mask R-CNN + U-Net refiner notebook, re-run and submitted | 0.416 | 0.34 |
 
 - **Validation:** fold 0 of `data/splits/split_v1.json`, grouped by observation date. It has 142 images, 220 annotator views and 1545 filaments, scored with the organizer metric (per-view PQ, IoU > 0.5).
-- **Baseline runs:** independent YOLO11s/m baseline runs on a separate 85/15 split are logged in [`results.md`](results.md). They used `src/train.py` and `src/predict.py`; their validation PQ ranges from 0.387 to 0.424.
+- **Baseline runs:** independent YOLO11s/m baseline runs on a separate 85/15 split used `src/train.py` and `src/predict.py`; their validation PQ ranges from 0.387 to 0.424.
 - **Full write-up:** the report PDF is [`docs/report/report.pdf`](docs/report/report.pdf). Its LaTeX source is in [`docs/report/`](docs/report/), using the competition's ACM template (`main.tex`, `preamble.tex`, `main.bib`, `figures/`). The experiment log and the negative results are in [`reports/`](reports/).
 - **Report numbers:** `scripts/report_stats.py` gives stage PQ with bootstrap CIs (`reports/report_stats.json`); `scripts/report_figures.py` draws the figures.
 
@@ -67,7 +67,7 @@ In the example crop, the fused detector mask misses the annotated filament (IoU 
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt   # pinned versions, Python 3.12
-.venv/bin/python -m pytest -q                                       # unit tests (39 pass, 4 need the data)
+.venv/bin/python -m pytest -q                                       # unit tests (36 pass; 2 need the data, 2 the external i079 weights)
 ```
 
 **Hardware.** The pipeline expects a CUDA GPU; we used one RTX 4080 SUPER with 16 GB. The detector runs at 1536 px with batch 2 and the refiners run under fp16 autocast.
@@ -159,7 +159,7 @@ Both routes below run the same pipeline from the committed weights, need no down
 
 ```
 src/filseg/        final pipeline library: data/GT handling, inference, fusion, refiners, post-processing, metric, RLE
-scripts/           training, inference, calibration and every experiment script (ablations, G0-G2 audits)
+scripts/           training, inference, calibration, report numbers and the experiments in the report (G0-G2 audits, rescorer, dataset variants)
 configs/           calibrated post-processing parameters and detector training arguments
 weights/           final model weights
 notebooks/         01_eda.ipynb (exploratory analysis), inference.ipynb (end-to-end pipeline)
@@ -167,8 +167,7 @@ tests/             unit tests (metric, RLE, post-processing, fusion)
 docs/report/       report (ACM LaTeX template, figures, bibliography)
 docs/              data analysis and error analysis notes, figures, project guide
 reports/           geometry audit (G0), path completion (G1) and Skeleton-Recall (G2) experiment reports
-src/*.py           first baseline (YOLO11s/m, separate split); see results.md
-results.md         run log of the baseline
+src/*.py           first baseline (YOLO11s/m, separate split; data root from MAGFILO_ROOT)
 ```
 
 ## What did not help

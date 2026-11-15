@@ -4,7 +4,10 @@ import numpy as np
 import cv2
 from pycocotools import mask as cm
 
-ROOT = "/home/baykar/Desktop/FLAMENT/filament-segmentation-2026/MAGFiLO_1.0_Kaggle_2026"
+ROOT = os.environ.get(
+    "MAGFILO_ROOT",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "raw", "MAGFiLO_1.0_Kaggle_2026"),
+)
 ANN = f"{ROOT}/train/MAGFiLO_1.0_Annotations_kaggle2026_train.json"
 IMG_DIR = f"{ROOT}/train/train_images"
 S = 2048

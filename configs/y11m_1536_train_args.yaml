@@ -1,7 +1,7 @@
 task: segment
 mode: train
-model: /home/doguscank/dogus_ws/solar-filament/weights/yolo11m-seg.pt
-data: /home/doguscank/dogus_ws/solar-filament/data/yolo/v1/data.yaml
+model: weights/yolo11m-seg.pt
+data: data/yolo/v1/data.yaml
 epochs: 80
 time: null
 patience: 30
@@ -12,7 +12,7 @@ save_period: -1
 cache: ram
 device: ""
 workers: 8
-project: /home/doguscank/dogus_ws/solar-filament/runs
+project: runs
 name: y11m_1536
 exist_ok: false
 pretrained: true
@@ -112,4 +112,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: tracktrack.yaml
-save_dir: /home/doguscank/dogus_ws/solar-filament/runs/y11m_1536
+save_dir: runs/y11m_1536
