@@ -12,6 +12,8 @@ It scores **0.474 PQ** on our date-grouped validation fold and **0.40 on the pub
 
 ## Team
 
+Kaggle team: **vprg-cv-term**
+
 - Tugce Keskin (Kaggle: tugcekskn)
 - Dogus Can Korkmaz (Kaggle: doucankorkmaz)
 
