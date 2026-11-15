@@ -29,7 +29,7 @@ Kaggle team: **vprg-cv-term**
 
 - **Validation:** fold 0 of `data/splits/split_v1.json`, grouped by observation date. It has 142 images, 220 annotator views and 1545 filaments, scored with the organizer metric (per-view PQ, IoU > 0.5).
 - **Baseline runs:** independent YOLO11s/m baseline runs on a separate 85/15 split are logged in [`results.md`](results.md). They used `src/train.py` and `src/predict.py`; their validation PQ ranges from 0.387 to 0.424.
-- **Full write-up:** the report is in [`docs/report/`](docs/report/), using the competition's ACM template (`main.tex`, `preamble.tex`, `main.bib`, `figures/`). The experiment log and the negative results are in [`reports/`](reports/).
+- **Full write-up:** the report PDF is [`docs/report/report.pdf`](docs/report/report.pdf). Its LaTeX source is in [`docs/report/`](docs/report/), using the competition's ACM template (`main.tex`, `preamble.tex`, `main.bib`, `figures/`). The experiment log and the negative results are in [`reports/`](reports/).
 - **Report numbers:** `scripts/report_stats.py` gives stage PQ with bootstrap CIs (`reports/report_stats.json`); `scripts/report_figures.py` draws the figures.
 
 ## Pipeline
