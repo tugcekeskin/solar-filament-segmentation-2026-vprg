@@ -32,6 +32,10 @@ It scores **0.474 PQ** on our date-grouped validation fold and **0.40 on the pub
 
 ## Pipeline
 
+![Pipeline: three YOLO11m-seg passes fused into instances, each refined at full resolution by a U-Net and a SAM ViT-B + LoRA refiner, blended, then decoded to RLE](docs/figures/pipeline.png)
+
+In the example crop, the fused detector mask misses the annotated filament (IoU 0.49) and the blended refiners turn it into a hit (IoU 0.71). The same stages with the code that runs each one:
+
 ```
  *.jpeg test images
         |
