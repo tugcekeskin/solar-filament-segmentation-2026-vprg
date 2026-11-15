@@ -25,7 +25,7 @@ Kaggle team: **vprg-cv-term**
 | same, prior-window U-Net refiner | 0.477 | 0.39 |
 | YOLO11m-seg 1536 + flip TTA + mask thinning | 0.462 | 0.39 |
 | same detector trained on all 707 images | – | 0.39 |
-| Reference: public "LB 0.70" Mask R-CNN + refiner notebook, re-submitted | 0.416 | 0.34 |
+| Reference: public Mask R-CNN + U-Net refiner notebook, re-run and submitted | 0.416 | 0.34 |
 
 - **Validation:** fold 0 of `data/splits/split_v1.json`, grouped by observation date. It has 142 images, 220 annotator views and 1545 filaments, scored with the organizer metric (per-view PQ, IoU > 0.5).
 - **Baseline runs:** independent YOLO11s/m baseline runs on a separate 85/15 split used `src/train.py` and `src/predict.py`; their validation PQ ranges from 0.387 to 0.424.

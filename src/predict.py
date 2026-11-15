@@ -1,5 +1,5 @@
 """Test inference -> competition submission CSV (filament_id, segmentation_rle; COCO RLE, Fortran order).
-Usage: python src/predict.py --weights W --imgsz 1024 --conf .4 --nms .5 --min_area 20 --thin 3 --out docs/submission_run2.csv"""
+Usage: python src/predict.py --weights W --imgsz 1024 --conf .4 --nms .5 --min_area 20 --thin 3 --out submission.csv"""
 import argparse, os, glob, csv, sys
 import numpy as np
 from pycocotools import mask as cm

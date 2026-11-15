@@ -76,10 +76,8 @@ Also to be looked at:
 | 🏁 First baseline | ~0.18 | U-Net 5 epochs |
 | 👍 Good start | ~0.36 | YOLO + U-Net refiner |
 | 🥇 **Our target** | **0.40–0.45** | — |
-| 🏆 Best honest score | ~0.49 | noisyislands |
 
 > Organizers: **"PQ > 0.35 is valuable for us"**
-> The 0.70+ scores on the leaderboard are teams exploiting a loophole in the system — the leaderboard will be cleaned up.
 
 ---
 
@@ -226,21 +224,7 @@ What the form asks for:
 ### 4) GitHub Repo (Required)
 **Repo:** https://github.com/tugcekeskin/solar-filament-segmentation-2026-vprg
 
-```
-solar-filament-segmentation-2026-vprg/
-├── notebooks/
-│   ├── 01_eda.ipynb
-│   ├── 02_training.ipynb
-│   └── 03_inference.ipynb
-├── src/
-│   ├── __init__.py
-│   ├── dataset.py
-│   ├── model.py
-│   └── train.py
-├── requirements.txt
-├── README.md
-└── LICENSE (MIT)
-```
+The final repository layout is described in the README ("Repository structure").
 
 ---
 
@@ -281,7 +265,7 @@ solar-filament-segmentation-2026-vprg/
 ### Libraries to Use
 
 ```
-torch==2.14.1               ← deep learning
+torch==2.15.0               ← deep learning
 segmentation_models_pytorch  ← U-Net
 albumentations               ← augmentation
 pycocotools                  ← RLE conversion
@@ -298,9 +282,9 @@ conda activate filament
 
 # PyTorch (depending on CUDA version)
 # CUDA 13.0:
-pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu130
+pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cu130
 # CUDA 12.1:
-pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cu121
 
 # The rest
 pip install -r requirements.txt

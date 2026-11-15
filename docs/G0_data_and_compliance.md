@@ -15,9 +15,7 @@
   Predictions for stems with no GT view are never counted.
 - TP = any pair with IoU > 0.5 (no Hungarian matching); FP = prediction column with no hit; FN = GT row with no hit.
 - PQ = ΣIoU(TP) / (|TP| + ½|FP| + ½|FN|).
-- Known quirk: overlapping duplicate predictions could each score TP. Organizers announced (Aug 20) they detect
-  "hacking the system" and run extra verification. **Decision: never emit overlapping instances; resolve overlaps by
-  mask-NMS / pixel ownership.** Do not exploit the metric.
+- Overlapping predictions are never emitted: overlaps are resolved by mask NMS and pixel ownership.
 - Organizer guidance: PQ > 0.35 is "of great value".
 
 ## Submission format
@@ -33,11 +31,6 @@
 - Licensing risk: Ultralytics is AGPL-3.0 (OSI-approved, does not prohibit commercial use) — acceptable but note in report.
 - Final deliverables (Google form): 4-page report (Overleaf template), **public git repo** with `requirements.txt`,
   a notebook running the full pipeline, **model weights stored in repo**.
-
-## Deadlines
-- Kaggle API deadline: **2026-11-15 06:00 UTC** (= Nov 15 09:00 Istanbul). Treat this as the hard deadline for
-  leaderboard submissions. Important-Dates page says Nov 15 23:59 CDT for reports/solutions — submit report by the
-  Kaggle deadline anyway to be safe.
 
 ## Hardware
 - RTX 4080 SUPER 16 GB, driver 615.71; venv torch 2.15.0+cu132, ultralytics 8.4.207.

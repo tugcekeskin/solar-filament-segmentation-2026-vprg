@@ -1,5 +1,5 @@
 """Validate a submission CSV against the competition format and the TEST image set.
-Usage: python src/check_submission.py docs/submission_runX.csv   (exit 1 on any failure)"""
+Usage: python src/check_submission.py submission.csv   (exit 1 on any failure)"""
 import sys, os, glob, csv, collections
 import numpy as np
 from pycocotools import mask as cm
